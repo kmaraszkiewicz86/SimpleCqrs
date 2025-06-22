@@ -10,7 +10,7 @@ namespace SimpleCqrs
     {
         TResult GetQuery<TResult>(IQuery<TResult> query);
         Task<TResult> GetQueryAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default);
-        void SendCommand(ICommand command);
-        Task SendCommandAsync(ICommand command, CancellationToken cancellationToken = default);
+        void SendCommand<TResult>(ICommand<TResult> command);
+        Task SendCommandAsync<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default);
     }
 }
