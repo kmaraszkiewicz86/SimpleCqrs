@@ -71,11 +71,12 @@ namespace SimpleCqrs
         /// <c>ICommandHandler{TCommand, TResult}</c> is registered and available.</remarks>
         /// <typeparam name="TResult">The type of the result expected from the command.</typeparam>
         /// <param name="command">The command to be processed. Must implement <see cref="ICommand{TResult}"/>.</param>
-        public void SendCommand<TResult>(ICommand<TResult> command)
+        /// <returns>The result of the result of the command. Use <see cref="VoidResult" > for empty result</see></returns>
+        public TResult SendCommand<TResult>(ICommand<TResult> command)
         {
-            var handlerType = typeof(ICommandHandler<,>).MakeGenericType(command.GetType());
+            var handlerType = typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult));
             var handler = CreateHandlerInstance(handlerType);
-            handlerType.GetMethod("Handle").Invoke(handler, new object[] { command });
+            return (TResult)handlerType.GetMethod("Handle").Invoke(handler, new object[] { command });
         }
 
         /// <summary>
@@ -87,12 +88,12 @@ namespace SimpleCqrs
         /// <typeparam name="TResult">The type of the result returned by the command.</typeparam>
         /// <param name="command">The command to be processed. Cannot be <see langword="null"/>.</param>
         /// <param name="cancellationToken">A token that can be used to cancel the operation. The default value is <see cref="CancellationToken.None"/>.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public Task SendCommandAsync<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default)
+        /// <returns>A task representing the asynchronous operation. The task result contains the result of the command. Use <see cref="VoidResult" > for empty result</see></returns>
+        public Task<TResult> SendCommandAsync<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default)
         {
-            var handlerType = typeof(IAsyncCommandHandler<,>).MakeGenericType(command.GetType());
+            var handlerType = typeof(IAsyncCommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult));
             var handler = CreateHandlerInstance(handlerType);
-            return (Task)handlerType.GetMethod("HandleAsync").Invoke(handler, new object[] { command, cancellationToken });
+            return (Task<TResult>)handlerType.GetMethod("HandleAsync").Invoke(handler, new object[] { command, cancellationToken });
         }
 
         /// <summary>
