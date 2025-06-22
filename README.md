@@ -24,6 +24,10 @@ Lightweight package to work with CQRS handlers and simple mediator class to easl
 - Handlers are resolved via reflection. Each handler must have a public parameterless constructor.
 - Only one handler per query/command type is supported per assembly.
 
+## The demo app with examples
+
+The demo app with examples is located [here](https://github.com/kmaraszkiewicz86/SimpleCqrs/tree/main/src/SimpleCqrs.Console.Demo).
+
 ## License
 
 MIT
