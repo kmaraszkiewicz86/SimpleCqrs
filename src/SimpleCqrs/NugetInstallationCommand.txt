@@ -1,0 +1,1 @@
+Package intallation command: dotnet add package SimpleCqrs --version 0.1.0
