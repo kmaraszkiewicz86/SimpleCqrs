@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net7.0;net8.0;net9.0</TargetFrameworks>
     <PackageId>Kmaraszkiewicz86.SimpleCqrs</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>Krzysztof Maraszkiewicz</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/kmaraszkiewicz86/SimpleCqrs</RepositoryUrl>
-    <Description>A simple, reflection-based CQRS mediator for .NET Standard 2.0+ projects.</Description>
+    <Description>A simple, lightweight CQRS library for .NET Standard 2.0 and later, as well as .NET 7 and above.</Description>
     <PackageProjectUrl>https://github.com/kmaraszkiewicz86/SimpleCqrs</PackageProjectUrl>
     <PackageTags>CQRS Mediator Reflection Simple</PackageTags>
   </PropertyGroup>
