@@ -1,4 +1,4 @@
-﻿namespace SimpleCqrs.ConsoleApp.Demo.Handlers
+﻿namespace SimpleCqrs.ConsoleApp.Demo.Cqrs.Queries
 {
     // Sample query
     public class SampleQuery : IQuery<SampleResult>

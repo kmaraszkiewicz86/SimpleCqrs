@@ -1,5 +1,6 @@
 ﻿using SimpleCqrs;
-using SimpleCqrs.ConsoleApp.Demo.Handlers;
+using SimpleCqrs.ConsoleApp.Demo.Cqrs.Commands;
+using SimpleCqrs.ConsoleApp.Demo.Cqrs.Queries;
 
 SimpleMediator simpleMediator = new (typeof(Program).Assembly);
 

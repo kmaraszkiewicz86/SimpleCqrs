@@ -1,4 +1,4 @@
-﻿namespace SimpleCqrs.ConsoleApp.Demo.Handlers
+﻿namespace SimpleCqrs.ConsoleApp.Demo.Cqrs.Commands
 {
     // Sample command
     public class SampleCommand : ICommand<VoidResult>

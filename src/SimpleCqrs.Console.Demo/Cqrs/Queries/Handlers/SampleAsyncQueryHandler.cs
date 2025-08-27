@@ -1,4 +1,4 @@
-﻿namespace SimpleCqrs.ConsoleApp.Demo.Handlers
+﻿namespace SimpleCqrs.ConsoleApp.Demo.Cqrs.Queries.Handlers
 {
     // Asynchronous query handler example
     public class SampleAsyncQueryHandler : IAsyncQueryHandler<SampleQuery, SampleResult>

@@ -1,4 +1,4 @@
-﻿namespace SimpleCqrs.ConsoleApp.Demo.Handlers
+﻿namespace SimpleCqrs.ConsoleApp.Demo.Cqrs.Commands.Handlers
 {
     // Synchronous command handler for command with int result
     public class SampleCommandWithResultHandler : ICommandHandler<SampleCommandWithResult, int>

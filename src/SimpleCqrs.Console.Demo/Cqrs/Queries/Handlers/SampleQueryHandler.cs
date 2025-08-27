@@ -1,4 +1,4 @@
-﻿namespace SimpleCqrs.ConsoleApp.Demo.Handlers
+﻿namespace SimpleCqrs.ConsoleApp.Demo.Cqrs.Queries.Handlers
 {
     // Synchronous query handler example
     public class SampleQueryHandler : IQueryHandler<SampleQuery, SampleResult>
