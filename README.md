@@ -21,7 +21,7 @@ Lightweight package to work with CQRS handlers and simple mediator class to easl
 
 ---
 
-## Usage Examples (C# 13, .NET 9)  
+## Usage Examples
 ### 1. Asynchronous Command Handler (`SampleAsyncCommandHandler` + `SampleCommand`)  
 ```
     public class SampleCommand : ICommand<VoidResult>
