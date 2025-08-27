@@ -19,6 +19,84 @@ Lightweight package to work with CQRS handlers and simple mediator class to easl
 - `TResult SendCommand<TResult>(ICommand<TResult> command)`: Sends a command to the appropriate handler for synchronous processing.
 - `Task<TResult> SendCommandAsync<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default)`: Sends a command to the appropriate handler for asynchronous processing.
 
+---
+
+## Usage Examples (C# 13, .NET 9)  
+### 1. Asynchronous Command Handler (`SampleAsyncCommandHandler` + `SampleCommand`)  
+```
+    public class SampleCommand : ICommand<VoidResult>
+    {
+        public int Id { get; set; }
+    }
+
+        public class SampleAsyncCommandHandler : IAsyncCommandHandler<SampleCommand, VoidResult>
+    {
+        public async Task<VoidResult> HandleAsync(SampleCommand command, CancellationToken cancellationToken = default)
+        {
+            return new VoidResult();
+        }
+    }
+```
+
+### 2. Synchronous Command Handler (`SampleCommandHandler`)  
+```
+    public class SampleCommandHandler : ICommandHandler<SampleCommand, VoidResult>
+    {
+        public VoidResult Handle(SampleCommand command)
+        {
+            return new VoidResult();
+        }
+    }
+```
+
+### 3. Asynchronous Command Handler With Result (`SampleCommandWithResultHandler` + `SampleCommandWithResult`)
+```
+    public class SampleCommandWithResult : ICommand<int>
+    {
+        public int Id { get; set; }
+    }
+
+    public class SampleCommandWithResultHandler : ICommandHandler<SampleCommandWithResult, int>
+    {
+        public int Handle(SampleCommandWithResult command)
+        {
+            // Example logic: return the Id incremented
+            Console.WriteLine($"Handled SampleCommandWithResult synchronously with Id: {command.Id}");
+            return command.Id + 100;
+        }
+    }
+```
+
+### 4. Synchronous Query Handler (`SampleCommandWithResultHandler` + `SampleQuery`)
+```
+    public class SampleQuery : IQuery<SampleResult>
+    {
+        public int Id { get; set; }
+    }
+
+    public class SampleQueryHandler : IQueryHandler<SampleQuery, SampleResult>
+    {
+        public SampleResult Handle(SampleQuery query)
+        {
+            // Example logic: return the Id incremented
+            return new(query.Id + 1, "Test");
+        }
+    }
+```
+
+### 5. Asynchronous Query Handler (`SampleAsyncQueryHandler`)
+```
+    public class SampleAsyncQueryHandler : IAsyncQueryHandler<SampleQuery, SampleResult>
+    {
+        public async Task<SampleResult> HandleAsync(SampleQuery query, CancellationToken cancellationToken = default)
+        {
+            // Example async logic: simulate async work and return the Id incremented
+            await Task.Delay(100, cancellationToken);
+            return new (query.Id + 1, "Test");
+        }
+    }
+```
+
 ## Notes
 
 - Handlers are resolved via reflection. Each handler must have a public parameterless constructor.
