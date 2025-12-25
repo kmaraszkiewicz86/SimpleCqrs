@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace SimpleCqrs
     public class SimpleMediator : ISimpleMediator
     {
         private readonly Assembly _handlersAssembly;
+        private readonly Assembly _modelsAssembly;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleMediator"/> class.
@@ -28,6 +30,19 @@ namespace SimpleCqrs
         public SimpleMediator(Assembly handlersAssembly)
         {
             _handlersAssembly = handlersAssembly ?? throw new ArgumentNullException(nameof(handlersAssembly));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimpleMediator"/> class.
+        /// </summary>
+        /// <param name="handlersAssembly">The assembly containing the handler types to be used by the mediator. This parameter cannot be <see
+        /// langword="null"/>.</param>
+        /// <param name="modelsAssembly">The assembly containing the command / queries types to be used in the mediator. This parameter cannot be <see
+        /// langword="null"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="handlersAssembly"/> is <see langword="null"/>.</exception>
+        public SimpleMediator(Assembly handlersAssembly, Assembly modelsAssembly) : this(handlersAssembly)
+        {
+            _modelsAssembly = modelsAssembly ?? throw new ArgumentNullException(nameof(modelsAssembly));
         }
 
         /// <summary>
@@ -109,14 +124,25 @@ namespace SimpleCqrs
         /// assembly.</exception>
         private object CreateHandlerInstance(Type handlerType)
         {
-            foreach (var type in _handlersAssembly.GetTypes())
+            var handlers = new List<Type>(_handlersAssembly.GetTypes());
+
+            //if (_modelsAssembly != null)
+            //{
+            //    handlers.AddRange(_modelsAssembly.GetTypes());
+            //}
+
+            foreach (var type in handlers)
             {
                 if (handlerType.IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                 {
                     return Activator.CreateInstance(type);
                 }
             }
-            throw new InvalidOperationException($"Handler for type {handlerType.Name} not found in assembly {_handlersAssembly.FullName}.");
+
+            var errorMessage = $"Handler for type {handlerType.Name} not found in assembly {_handlersAssembly.FullName}." +
+                $"{(_modelsAssembly != null ? $" and in assembly {_modelsAssembly.FullName}." : "")}";
+
+            throw new InvalidOperationException(errorMessage);
         }
     }
 }
