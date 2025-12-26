@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SimpleCqrs.ConsoleApp.Demo.Models\SimpleCqrs.ConsoleApp.Demo.Models.csproj" />
     <ProjectReference Include="..\SimpleCqrs\SimpleCqrs.csproj" />
   </ItemGroup>

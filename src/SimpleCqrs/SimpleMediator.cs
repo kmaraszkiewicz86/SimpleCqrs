@@ -20,6 +20,7 @@ namespace SimpleCqrs
     {
         private readonly Assembly _handlersAssembly;
         private readonly Assembly _modelsAssembly;
+        private readonly IServiceProvider _serviceProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleMediator"/> class.
@@ -41,6 +42,32 @@ namespace SimpleCqrs
         /// langword="null"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="handlersAssembly"/> is <see langword="null"/>.</exception>
         public SimpleMediator(Assembly handlersAssembly, Assembly modelsAssembly) : this(handlersAssembly)
+        {
+            _modelsAssembly = modelsAssembly ?? throw new ArgumentNullException(nameof(modelsAssembly));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimpleMediator"/> class.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider to be used for resolving dependencies.</param>
+        /// <param name="handlersAssembly">The assembly containing the handler types to be used by the mediator. This parameter cannot be <see
+        /// langword="null"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="handlersAssembly"/> is <see langword="null"/>.</exception>
+        public SimpleMediator(IServiceProvider serviceProvider, Assembly handlersAssembly) : this(handlersAssembly)
+        {
+            _serviceProvider = serviceProvider;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimpleMediator"/> class.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider to be used for resolving dependencies.</param>
+        /// <param name="handlersAssembly">The assembly containing the handler types to be used by the mediator. This parameter cannot be <see
+        /// langword="null"/>.</param>
+        /// <param name="modelsAssembly">The assembly containing the command / queries types to be used in the mediator. This parameter cannot be <see
+        /// langword="null"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="handlersAssembly"/> is <see langword="null"/>.</exception>
+        public SimpleMediator(IServiceProvider serviceProvider, Assembly handlersAssembly, Assembly modelsAssembly) : this(serviceProvider, handlersAssembly)
         {
             _modelsAssembly = modelsAssembly ?? throw new ArgumentNullException(nameof(modelsAssembly));
         }
@@ -135,7 +162,12 @@ namespace SimpleCqrs
             {
                 if (handlerType.IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                 {
-                    return Activator.CreateInstance(type);
+                    if (_serviceProvider is null)
+                    {
+                        return Activator.CreateInstance(type);
+                    }
+
+                    return _serviceProvider.GetService(type);
                 }
             }
 

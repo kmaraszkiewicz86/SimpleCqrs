@@ -1,33 +1,21 @@
-﻿using SimpleCqrs;
-using SimpleCqrs.ConsoleApp.Demo.Cqrs.Commands;
-using SimpleCqrs.ConsoleApp.Demo.Cqrs.Queries;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SimpleCqrs;
+using SimpleCqrs.ConsoleApp.Demo;
+using SimpleCqrs.ConsoleApp.Demo.Cqrs.Commands.Handlers;
 using SimpleCqrs.ConsoleApp.Demo.Models.Cqrs.Commands;
+using SimpleCqrs.ConsoleApp.Demo.Services;
 
-SimpleMediator simpleMediator = new (typeof(Program).Assembly);
+var services = new ServiceCollection();
 
-SampleCommand sampleCommand = new() { Id = 1 };
-SampleWithResultCommand sampleCommandWithResult = new() { Id = 1 };
-SampleQuery sampleQuery = new() { Id = 1 };
+services.AddScoped<ISampleService, SampleService>();
+services.ConfigureSimpleCqrs(typeof(Program).Assembly);
 
-SampleResult queryResult = simpleMediator.GetQuery(sampleQuery);
-SampleResult queryResult2 = await simpleMediator.GetQueryAsync(sampleQuery, CancellationToken.None);
+services.AddScoped<ISimpleMediator>(serviceProvider => new SimpleMediator(serviceProvider,
+    typeof(Program).Assembly, 
+    typeof(SampleWithResultInOtherProjectCommand).Assembly));
+services.AddScoped<ISimpleMediatorSampleService, SimpleMediatorSampleService>();
 
-Console.WriteLine($"Sync Query Result: {queryResult.Id}");
-Console.WriteLine($"Async Query Result: {queryResult2.Id}");
+using var serviceProvider = services.BuildServiceProvider();
 
-simpleMediator.SendCommand(sampleCommand);
-await simpleMediator.SendCommandAsync(sampleCommand);
-
-int commandResult = simpleMediator.SendCommand(sampleCommandWithResult);
-int commandResult2 = await simpleMediator.SendCommandAsync(sampleCommandWithResult);
-
-
-Console.WriteLine($"Sync Command Result: {commandResult}");
-Console.WriteLine($"Async Command Result: {commandResult2}");
-
-//check if solution works with command handlers with commands defined in other projects
-SimpleMediator simpleMediatorDiffrentProjects = new(typeof(Program).Assembly, typeof(SampleWithResultInOtherProjectCommand).Assembly);
-SampleWithResultInOtherProjectCommand sampledWithResultInOtherProjectCommand = new() { Id = 1 };
-
-int commandResult3 = simpleMediatorDiffrentProjects.SendCommand(sampledWithResultInOtherProjectCommand);
-Console.WriteLine($"Async Command Result (Other Project): {commandResult3}");
+var service = serviceProvider.GetRequiredService<ISimpleMediatorSampleService>();
+await service.RunDemoAsync();
