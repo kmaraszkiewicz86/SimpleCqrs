@@ -99,7 +99,9 @@ Lightweight package to work with CQRS handlers and simple mediator class to easl
 
 ### 6. Dependency Injection example (Microsoft.Extensions.DependencyInjection)
 ```
-    services.AddScoped<ISimpleMediator>(scope => new SimpleMediator(typeof(GetRosaryForTodayQueryHandler).Assembly));
+    var services = new ServiceCollection();
+    
+    services.ConfigureSimpleCqrs(typeof(Program).Assembly);
 ```
 
 ## Notes
