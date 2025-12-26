@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleCqrs;
 using SimpleCqrs.ConsoleApp.Demo;
-using SimpleCqrs.ConsoleApp.Demo.Cqrs.Commands.Handlers;
-using SimpleCqrs.ConsoleApp.Demo.Models.Cqrs.Commands;
 using SimpleCqrs.ConsoleApp.Demo.Services;
 
 var services = new ServiceCollection();
@@ -11,8 +9,7 @@ services.AddScoped<ISampleService, SampleService>();
 services.ConfigureSimpleCqrs(typeof(Program).Assembly);
 
 services.AddScoped<ISimpleMediator>(serviceProvider => new SimpleMediator(serviceProvider,
-    typeof(Program).Assembly, 
-    typeof(SampleWithResultInOtherProjectCommand).Assembly));
+    typeof(Program).Assembly));
 services.AddScoped<ISimpleMediatorSampleService, SimpleMediatorSampleService>();
 
 using var serviceProvider = services.BuildServiceProvider();

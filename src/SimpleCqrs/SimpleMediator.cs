@@ -19,7 +19,6 @@ namespace SimpleCqrs
     public class SimpleMediator : ISimpleMediator
     {
         private readonly Assembly _handlersAssembly;
-        private readonly Assembly _modelsAssembly;
         private readonly IServiceProvider _serviceProvider;
 
         /// <summary>
@@ -36,19 +35,6 @@ namespace SimpleCqrs
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleMediator"/> class.
         /// </summary>
-        /// <param name="handlersAssembly">The assembly containing the handler types to be used by the mediator. This parameter cannot be <see
-        /// langword="null"/>.</param>
-        /// <param name="modelsAssembly">The assembly containing the command / queries types to be used in the mediator. This parameter cannot be <see
-        /// langword="null"/>.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="handlersAssembly"/> is <see langword="null"/>.</exception>
-        public SimpleMediator(Assembly handlersAssembly, Assembly modelsAssembly) : this(handlersAssembly)
-        {
-            _modelsAssembly = modelsAssembly ?? throw new ArgumentNullException(nameof(modelsAssembly));
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleMediator"/> class.
-        /// </summary>
         /// <param name="serviceProvider">The service provider to be used for resolving dependencies.</param>
         /// <param name="handlersAssembly">The assembly containing the handler types to be used by the mediator. This parameter cannot be <see
         /// langword="null"/>.</param>
@@ -56,20 +42,6 @@ namespace SimpleCqrs
         public SimpleMediator(IServiceProvider serviceProvider, Assembly handlersAssembly) : this(handlersAssembly)
         {
             _serviceProvider = serviceProvider;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleMediator"/> class.
-        /// </summary>
-        /// <param name="serviceProvider">The service provider to be used for resolving dependencies.</param>
-        /// <param name="handlersAssembly">The assembly containing the handler types to be used by the mediator. This parameter cannot be <see
-        /// langword="null"/>.</param>
-        /// <param name="modelsAssembly">The assembly containing the command / queries types to be used in the mediator. This parameter cannot be <see
-        /// langword="null"/>.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="handlersAssembly"/> is <see langword="null"/>.</exception>
-        public SimpleMediator(IServiceProvider serviceProvider, Assembly handlersAssembly, Assembly modelsAssembly) : this(serviceProvider, handlersAssembly)
-        {
-            _modelsAssembly = modelsAssembly ?? throw new ArgumentNullException(nameof(modelsAssembly));
         }
 
         /// <summary>
@@ -151,12 +123,12 @@ namespace SimpleCqrs
         /// assembly.</exception>
         private object CreateHandlerInstance(Type handlerType)
         {
-            var handlers = new List<Type>(_handlersAssembly.GetTypes());
+            if (_serviceProvider != null)
+            {
+                return _serviceProvider.GetService(handlerType);
+            }
 
-            //if (_modelsAssembly != null)
-            //{
-            //    handlers.AddRange(_modelsAssembly.GetTypes());
-            //}
+            var handlers = new List<Type>(_handlersAssembly.GetTypes());
 
             foreach (var type in handlers)
             {
@@ -171,10 +143,7 @@ namespace SimpleCqrs
                 }
             }
 
-            var errorMessage = $"Handler for type {handlerType.Name} not found in assembly {_handlersAssembly.FullName}." +
-                $"{(_modelsAssembly != null ? $" and in assembly {_modelsAssembly.FullName}." : "")}";
-
-            throw new InvalidOperationException(errorMessage);
+            throw new InvalidOperationException($"Handler for type {handlerType.Name} not found in assembly {_handlersAssembly.FullName}.");
         }
     }
 }
