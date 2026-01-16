@@ -113,6 +113,12 @@ Lightweight package to work with CQRS handlers and simple mediator class to easl
 
 The demo app with examples is located [here](https://github.com/kmaraszkiewicz86/SimpleCqrs/tree/main/src/SimpleCqrs.Console.Demo).
 
+### Nuget package to install:
+
+```
+dotnet add package Kmaraszkiewicz86.SimpleCqrs --version 0.1.3
+```
+
 ## License
 
 MIT
