@@ -116,7 +116,7 @@ The demo app with examples is located [here](https://github.com/kmaraszkiewicz86
 ### Nuget package to install:
 
 ```
-dotnet add package Kmaraszkiewicz86.SimpleCqrs --version 0.1.3
+dotnet add package Kmaraszkiewicz86.SimpleCqrs --version 0.1.4
 ```
 
 ## License
